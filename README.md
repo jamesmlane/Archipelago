@@ -9,6 +9,6 @@ for public download and use.
 
 extinction.py, misc.py, plot.py, proto.py and tasks.py contain helper 
 functions. islands.py is the source extraction code, which interfaces 
-for tools from the Starlink ([http://starlink.eao.hawaii.edu/starlink]) 
+for tools from the [Starlink](http://starlink.eao.hawaii.edu/starlink) 
 package. analysis.py contains the primary code for performing 
 calculations and preparing catalogs for plotting.

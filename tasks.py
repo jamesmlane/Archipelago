@@ -91,6 +91,8 @@ def GetInOrion(region):
                         'CepheusSouth',
                         'CrA',
                         'IC5146',
+                        'IC5146_CN',
+                        'IC5146_NS',
                         'OphScoMain',
                         'OphScoN2',
                         'OphScoN3',
@@ -136,6 +138,8 @@ def GetDistance(reg):
                         'CepheusSouth',
                         'CrA',
                         'IC5146',
+                        'IC5146_CN',
+                        'IC5146_NS',
                         'OphScoMain',
                         'OphScoN2',
                         'OphScoN3',
@@ -168,6 +172,8 @@ def GetDistance(reg):
                           0,        # CepheusSouth
                           0,        # CrA
                           1000,     # IC5146
+                          1000,     # IC5146_CN
+                          1000,     # IC5146_NS
                           137,      # OphScoMain
                           0,        # OphN2
                           0,        # OphN3
@@ -221,6 +227,8 @@ def GetPrintName(reg):
                         'CepheusSouth',
                         'CrA',
                         'IC5146',
+                        'IC5146_CN',
+                        'IC5146_NS',
                         'OphScoMain',
                         'OphScoN2',
                         'OphScoN3',
@@ -246,38 +254,40 @@ def GetPrintName(reg):
                         'TaurusL1495',
                         'TaurusSouth',
                         'TaurusTMC'])
-    printable_regions = np.array([  436,      # Aquila
-                                    'Aur',    # Auriga
-                                    0,        # CepheusL1228
-                                    0,        # CepheusL1251
-                                    0,        # CepheusSouth
-                                    0,        # CrA
-                                    'IC5146', # IC5146
-                                    'OphSco', # OphScoMain
-                                    0,        # OphN2
-                                    0,        # OphN3
-                                    0,        # OphN6
-                                    0,        # OrionA
-                                    388,      # OrionAN
-                                    'OriAS',  # OrionAS
-                                    'OriB',   # OrionB
-                                    388,      # OrionB_L1622
-                                    388,      # OrionB_N2023
-                                    388,      # OrionB_N2068
-                                    'IC348',  # PerseusIC348
-                                    'PersW',  # PerseusWest
-                                    0,        # PipeB59
-                                    0,        # PipeE1
-                                    436,      # Serpens
-                                    'Ser',    # SerpensAquila
-                                    436,      # SerpensE
-                                    436,      # SerpensMain
-                                    436,      # SerpensMWC297
-                                    436,      # SerpensN
-                                    'Tau',    # Taurus
-                                    'L1495',  # TaurusL1495
-                                    140,      # TaurusSouth
-                                    140       # TaurusTMC
+    printable_regions = np.array([  436,        # Aquila
+                                    'Aur',      # Auriga
+                                    0,          # CepheusL1228
+                                    0,          # CepheusL1251
+                                    0,          # CepheusSouth
+                                    0,          # CrA
+                                    'IC5146',   # IC5146
+                                    'IC5146 NS' # IC5146_NS
+                                    'IC5146 CN' # IC5146_CN
+                                    'OphSco',   # OphScoMain
+                                    0,          # OphN2
+                                    0,          # OphN3
+                                    0,          # OphN6
+                                    0,          # OrionA
+                                    388,        # OrionAN
+                                    'OriAS',    # OrionAS
+                                    'OriB',     # OrionB
+                                    388,        # OrionB_L1622
+                                    388,        # OrionB_N2023
+                                    388,        # OrionB_N2068
+                                    'IC348',    # PerseusIC348
+                                    'PersW',    # PerseusWest
+                                    0,          # PipeB59
+                                    0,          # PipeE1
+                                    436,        # Serpens
+                                    'Ser',      # SerpensAquila
+                                    436,        # SerpensE
+                                    436,        # SerpensMain
+                                    436,        # SerpensMWC297
+                                    436,        # SerpensN
+                                    'Tau',      # Taurus
+                                    'L1495',    # TaurusL1495
+                                    140,        # TaurusSouth
+                                    140         # TaurusTMC
                                     ])
 
     if not reg in regions:

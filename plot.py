@@ -47,9 +47,6 @@ def IslandMass( fig,
                 outplots,
                 region_properties,
                 plot_individual = False,
-                ax = None,
-                save_ind = True,
-                spec_fig = False
               ):
     '''
     Island Mass:
@@ -90,46 +87,38 @@ def IslandMass( fig,
     med_island_radius = np.median(island_radius) * 206264.8 / distance
     island_mass_med = 1.299E-8 * (3*noise) * (distance**2) * (np.pi*med_island_radius**2)
 
-    # Create axis object
-    if ax == None:
-        ax = fig.add_subplot(111)
-    ##fi
+    # Warn if large islands of interest.
     if max(island_mass) > 1000: print('Warning: hypermassive islands in '+region)
 
+    # Make the histogram.
+    ax = fig.add_subplot(111)
     num, bins, rects = ax.hist(np.log10(island_mass), bins=12,
                                 range=[-3,3], color='b', alpha=0.75,
                                 log=True)
+
+    # Plot supporting information.
     ax.axvline(0, color='Black', linestyle='dashed')
     ax.axvline( np.log10(island_mass_min), color='Black', linestyle='dotted',
                 linewidth=0.5, label='Min. detection limit')
     ax.axvline( np.log10(island_mass_med), color='Black', linestyle='dashdot',
                 linewidth=0.5, label='Med. detection limit')
+    ax.plot(np.log10(cmf_m), cmf_0_35, color='DodgerBlue', label=r'$\alpha=-0.35$')
+    scale_relation = r'$M \propto d^{2}$'
+    ax.annotate(scale_relation, (0.55,0.9), xycoords='axes fraction')
 
+    # Adjust axes
     ax.set_ylabel('Number')
     ax.set_xlabel(r'Island Mass log(M$_{\odot}$)')
     ax.set_ylim(0.5, 200)
+    ax.legend(loc='upper right', fontsize=8, labelspacing=0.5)
+    ax.set_title(region+' Island Masses')
 
-    # Only do certain things if this isn't a special figure
-    if spec_fig == False:
-        ax.plot(np.log10(cmf_m), cmf_0_35, color='DodgerBlue', label=r'$\alpha=-0.35$')
-        scale_relation = r'$M \propto d^{2}$'
-        ax.annotate(scale_relation, (0.55,0.9), xycoords='axes fraction')
-        ax.legend(loc='upper right', fontsize=8, labelspacing=0.5)
-        ax.set_title(region+' Island Masses')
-    ##fi
-
-    if save_ind == True:
-      plt.savefig(outplots, format='pdf')
-    ##fi
+    # Save
+    plt.savefig(outplots, format='pdf')
 
     # If the individual plot keyword is set then plot a .png as well:
     if plot_individual == True:
         plt.savefig('islandmass_'+region+'.png', dpi=300)
-    ##fi
-
-    # If this is a special figure then return the figure / axis objects.
-    if spec_fig == True:
-        return fig, ax
     ##fi
 
     plt.clf()
@@ -141,9 +130,6 @@ def IslandJeansMass(fig,
                     region_properties,
                     plot_properties,
                     plot_individual = False,
-                    ax = None,
-                    save_ind = True,
-                    spec_fig = False
                     ):
     '''
     Island Jeans Mass:
@@ -158,9 +144,6 @@ def IslandJeansMass(fig,
         region_properties (RegionProperties): The RegionProperties object.
         plot_properties (PlotProperties): The PlotProperties object.
         plot_individual (Boolean): Make an individual png of the image [False]
-        ax (Object): The axis object to use in the plotting routine
-        save_ind (Boolean): Save each individual figure to the outplot
-        spec_fig (Boolean): The program is being called for making paper Figure
 
     Returns:
         None?
@@ -185,13 +168,11 @@ def IslandJeansMass(fig,
     island_jeans_mass_min = (3.305E-8) * np.power(island_density_min*1000,-0.5)
     island_masspmj_min = island_mass_min / island_jeans_mass_min
 
-    # Make the axis object.
-    if ax == None:
-        ax = fig.add_subplot(111)
-    ##fi
+    # Warn if islands of interest are present.
     if max(np.log10(island_masspmj)) > 3: print('Warning: hyperunstable islands in '+region)
 
     # Plot different regimes.
+    ax = fig.add_subplot(111)
     # Stable:
     bin_range = [-3,0]
     snum, sbins, rects = ax.hist(np.log10(island_masspmj), bins=12, range=bin_range,
@@ -211,33 +192,26 @@ def IslandJeansMass(fig,
     _,_,_ = ax.hist(np.log10(island_masspmj[where_islandyso]), bins=9, range=bin_range,
                     color='ForestGreen', alpha=1.0, log=True)
 
-    ax.set_ylabel('Number')
-    ax.set_xlabel(r'log(M$_{island}$ / M$_{island,J}$)')
+    # Plot supporting information.
     ax.axvline(0, 0, 1, color='k', linestyle='dashed')
     ax.axvline(np.log10(4), 0, 1, color='k', linestyle='dashed')
     ax.axvline(np.log10(island_masspmj_min), color='Black', linestyle='dotted',
                 linewidth=0.5)
+    scale_relation = r'$M/M_{Jeans} \propto d^{\frac{3}{2}}$'
+    ax.annotate(scale_relation, (0.8,0.7), xycoords='axes fraction')
+
+    # Adjust axes
+    ax.set_ylabel('Number')
+    ax.set_xlabel(r'log(M$_{island}$ / M$_{island,J}$)')
     ax.set_xlim(-2.5, 3)
     ax.set_ylim(0.5, 200)
+    ax.set_title(region+' Island Stability')
 
-    # Only print some things on individual figures.
-    if spec_fig == False:
-        ax.set_title(region+' Island Stability')
-        scale_relation = r'$M/M_{Jeans} \propto d^{\frac{3}{2}}$'
-        ax.annotate(scale_relation, (0.8,0.7), xycoords='axes fraction')
-    ##fi
-
-    if save_ind == True:
-      plt.savefig(outplots, format='pdf')
-    ##fi
+    plt.savefig(outplots, format='pdf')
 
     # If the individual plot keyword is set then plot a .png as well:
     if plot_individual == True:
         plt.savefig('islandjeansmass_'+region+'.png', dpi=300)
-    ##fi
-
-    if spec_fig == True:
-        return fig, ax
     ##fi
 
     plt.clf()
@@ -248,9 +222,6 @@ def FragmentMass(fig,
                  outplots,
                  region_properties,
                  plot_individual = False,
-                 ax = None,
-                 save_ind = True,
-                 spec_fig = False
                  ):
     '''
     Fragment Mass:
@@ -264,9 +235,6 @@ def FragmentMass(fig,
         outplots (PdfPages): The PdfPages object on which to write the plot.
         region_properties (RegionProperties): The RegionProperties object.
         plot_individual (Boolean): Make an individual png of the image [False]
-        ax (Object): The axis object to use in the plotting routine
-save_ind (Boolean): Save each individual figure to the outplot
-spec_fig (Boolean): The program is being called for making paper Figure.
 
     Returns:
         None?
@@ -292,45 +260,38 @@ spec_fig (Boolean): The program is being called for making paper Figure.
     cmf_m = np.array([10,1000])
     cmf_0_35 = 100*np.power(cmf_m,-0.35)
 
-    # Make the plot
-    if ax == None:
-        ax = fig.add_subplot(111)
-    ##fi
+    # Warn about objects of interest
     if max(frag_mass) > 1000: print('Warning: hypermassive fragments in '+region)
 
+    # Plot
+    ax = fig.add_subplot(111)
     num, bins, rects = ax.hist(np.log10(frag_mass), bins=12,
                                 range=[-3,3], color='b', alpha=0.75,
                                 log=True)
+
+    # Plot supporting information.
     ax.axvline(0, color='Black', linestyle='dashed')
     ax.axvline(np.log10(frag_mass_min), color='Black', linestyle='dotted',
                 linewidth=0.5, label='Min. detection limit')
     ax.axvline(np.log10(frag_mass_med), color='Black', linestyle='dashdot',
                 linewidth=0.5, label='Med. detection limit')
+    ax.plot(np.log10(cmf_m), cmf_0_35, color='DodgerBlue', label=r'$\alpha=-0.35$')
+    scale_relation = r'$M \propto d^{2}$'
+    ax.annotate(scale_relation, (0.55,0.9), xycoords='axes fraction')
 
+    # Adjust axes
     ax.set_ylabel('Number')
     ax.set_xlabel(r'Fragment Mass log(M$_{\odot}$)')
     ax.set_ylim(0.5, 200)
+    ax.set_title(region+' Fragment Masses')
+    ax.legend(loc='upper right', fontsize=8, labelspacing=0.5)
 
-    # Only do certain things if this isn't a special figure
-    if spec_fig == False:
-        ax.plot(np.log10(cmf_m), cmf_0_35, color='DodgerBlue', label=r'$\alpha=-0.35$')
-        scale_relation = r'$M \propto d^{2}$'
-        ax.annotate(scale_relation, (0.55,0.9), xycoords='axes fraction')
-        ax.legend(loc='upper right', fontsize=8, labelspacing=0.5)
-        ax.set_title(region+' Fragment Masses')
-    ##fi
-
-    if save_ind == True:
-      plt.savefig(outplots, format='pdf')
-    ##fi
+    # Save plot
+    plt.savefig(outplots)
 
     # If the individual plot keyword is set then plot a .png as well:
     if plot_individual == True:
         plt.savefig('fragmentmass_'+region+'.png', dpi=300)
-
-    if spec_fig == True:
-        return fig, ax
-    ##fi
 
     plt.clf()
 #def
@@ -341,9 +302,6 @@ def FragmentJeansMass(fig,
                       region_properties,
                       plot_properties,
                       plot_individual = False,
-                      ax = None,
-                      save_ind = True,
-                      spec_fig = False
                       ):
     '''
     Fragment Jeans Mass:
@@ -357,9 +315,6 @@ def FragmentJeansMass(fig,
         outplots (PdfPages): The PdfPages object on which to write the plot.
         region_properties (RegionProperties): The RegionProperties object.
         plot_individual (Boolean):Make an individual png of the image [False]
-        ax (Object): The axis object to use in the plotting routine
-        save_ind (Boolean): Save each individual figure to the outplot
-        spec_fig (Boolean): The program is being called for making paper Figure.
 
     Returns:
         None?
@@ -385,13 +340,12 @@ def FragmentJeansMass(fig,
     frag_jeans_mass_min = (3.305E-8) * np.power(frag_density_min*1000,-0.5)
     frag_masspmj_min = frag_mass_min / frag_jeans_mass_min
 
-    # Make the axis object.
-    if ax == None:
-        ax = fig.add_subplot(111)
-    ##fi
+    # Warn about objects of interest.
     if max(np.log10(frag_masspmj)) > 3: print('Warning: hyperunstable fragments in '+region)
 
-    #Stable
+    # Plot
+    ax = fig.add_subplot(111)
+    # Stable
     bin_range = [-3,0]
     snum, sbins, rects = ax.hist(np.log10(frag_masspmj), bins=12, range=bin_range,
                                 color='MediumBlue', alpha=1.0, log=True)
@@ -409,38 +363,28 @@ def FragmentJeansMass(fig,
                                 color='MediumBlue', alpha=0.5, log=True)
     _,_,_ = ax.hist(np.log10(frag_masspmj[where_fragyso]), bins=6, range=bin_range,
                     color='ForestGreen', alpha=1.0, log=True)
-    ax.set_ylabel('Number')
-    ax.set_xlabel(r'log(M$_{frag}$ / M$_{frag,J}$)')
-    ax.set_xlim(-3, 3)
+
+    # Plot supporting information
     ax.axvline(0, 0, 1, color='k', linestyle='dashed')
     ax.axvline(np.log10(4), 0, 1, color='k', linestyle='dashed')
     ax.axvline(np.log10(frag_masspmj_min), color='Black', linestyle='dotted',
                 linewidth=0.5)
+    scale_relation = r'$M/M_{Jeans} \propto d^{\frac{3}{2}}$'
+    ax.annotate(scale_relation, (0.8,0.7), xycoords='axes fraction')
+
+    ax.set_ylabel('Number')
+    ax.set_xlabel(r'log(M$_{frag}$ / M$_{frag,J}$)')
+    ax.set_xlim(-3, 3)
     ax.set_ylim(0.5, 200)
-    if save_ind == True:
-      plt.savefig(outplots, format='pdf')
-    ##fi
+    ax.set_title(region+' Fragment Stability')
 
-    # Only print some things on individual figures.
-    if spec_fig == False:
-        ax.set_title(region+' Fragment Stability')
-        scale_relation = r'$M/M_{Jeans} \propto d^{\frac{3}{2}}$'
-        ax.annotate(scale_relation, (0.8,0.7), xycoords='axes fraction')
-    ##fi
-
-    if save_ind == True:
-      plt.savefig(outplots, format='pdf')
-    ##fi
+    # Save plot
+    plt.savefig(outplots, format='pdf')
 
     # If the individual plot keyword is set then plot a .png as well:
     if plot_individual == True:
         plt.savefig('islandjeansmass_'+region+'.png', dpi=300)
     ##fi
-
-    if spec_fig == True:
-        return fig, ax
-    ##fi
-
 
     plt.clf()
 #def
@@ -1889,48 +1833,48 @@ def ColumnMassFraction( fig,
     if ax == None:
         ax = fig.add_subplot(111)
     ##fi
-    ax.plot(np.log10(ext_evals*16.6), ext_cml_norm, c='DodgerBlue', label='NICEST')
-    ax.plot([-1,np.log10(ext_evals[-1]*16.6)], [1,1], c='DodgerBlue')
-    ax.plot(np.log10(whole_evals*16.6), whole_cml_norm, c='DodgerBlue', linestyle='dotted',
+    ax.plot(ext_evals*16.6, ext_cml_norm, c='DodgerBlue', label='NICEST')
+    ax.plot([-1,ext_evals[-1]*16.6], [1,1], c='DodgerBlue')
+    ax.plot(whole_evals*16.6, whole_cml_norm, c='DodgerBlue', linestyle='dotted',
             label='NICEST No Mask')
-    ax.plot([-1,np.log10(whole_evals[-1]*16.6)], [1,1], c='DodgerBlue', linestyle='dashed')
-    ax.plot(np.log10(s2_evals*16.6), s2_cml_norm, c='Red', label='Islands')
-    ax.plot([-1,np.log10(s2_evals[-1]*16.6)], [1,1], c='Red')
+    ax.plot([-1,whole_evals[-1]*16.6], [1,1], c='DodgerBlue', linestyle='dashed')
+    ax.plot(s2_evals*16.6, s2_cml_norm, c='Red', label='Islands')
+    ax.plot([-1,s2_evals[-1]*16.6], [1,1], c='Red')
     #ax.plot(proto_evals*16.6, proto_cml_norm, c='m', label='Protostars')
 
     if orion == True:
-        ax.plot(np.log10(p_evals*16.6), p_cml_norm, c='DarkGreen', linestyle='dashed',
+        ax.plot(p_evals*16.6, p_cml_norm, c='DarkGreen', linestyle='dashed',
                 alpha=0.5, label='P')
         if len(p_evals) > 0:
-            ax.plot([-1,np.log10(p_evals[-1]*16.6)], [1,1], c='DarkGreen', linestyle='dashed',
+            ax.plot([-1,p_evals[-1]*16.6], [1,1], c='DarkGreen', linestyle='dashed',
                     alpha=0.5)
         ##fi
-        ax.plot(np.log10(d_evals*16.6), d_cml_norm, c='Olive', linestyle='dashed',
+        ax.plot(d_evals*16.6, d_cml_norm, c='Olive', linestyle='dashed',
                 alpha=0.5, label='D')
         if len(d_evals) > 0:
-            ax.plot([-1,np.log10(d_evals[-1]*16.6)], [1,1], c='Olive', linestyle='dashed',
+            ax.plot([-1,d_evals[-1]*16.6], [1,1], c='Olive', linestyle='dashed',
                     alpha=0.5)
         ##fi
         #ax.plot(fp_evals*16.6, fp_cml_norm, c='g', label='FP')
         #ax.plot(rp_evals*16.6, rp_cml_norm, '--b', label='RP')
     ##fi
     if orion == False:
-        ax.plot(np.log10(c01_evals*16.6), c01_cml_norm, c='DarkGreen', linestyle='dashed',
+        ax.plot(c01_evals*16.6, c01_cml_norm, c='DarkGreen', linestyle='dashed',
                 alpha=0.5, label='Class 0+1')
         if len(c01_evals) > 0:
-            ax.plot([-1,np.log10(c01_evals[-1]*16.6)], [1,1], c='DarkGreen', linestyle='dashed',
+            ax.plot([-1,c01_evals[-1]*16.6], [1,1], c='DarkGreen', linestyle='dashed',
                     alpha=0.5)
         ##fi
-        ax.plot(np.log10(f_evals*16.6), f_cml_norm, c='Orange', linestyle='dashed',
+        ax.plot(f_evals*16.6, f_cml_norm, c='Orange', linestyle='dashed',
                 alpha=0.5, label='Flat')
         if len(f_evals) > 0:
-            ax.plot([-1,np.log10(f_evals[-1]*16.6)], [1,1], c='Orange', linestyle='dashed',
+            ax.plot([-1,f_evals[-1]*16.6], [1,1], c='Orange', linestyle='dashed',
                     alpha=0.5)
         ##fi
-        ax.plot(np.log10(c2_evals*16.6), c2_cml_norm, c='Olive', linestyle='dashed',
+        ax.plot(c2_evals*16.6, c2_cml_norm, c='Olive', linestyle='dashed',
                 alpha=0.5, label='Class 2')
         if len(c2_evals) > 0:
-            ax.plot([-1,np.log10(c2_evals[-1]*16.6)], [1,1], c='Olive', linestyle='dashed',
+            ax.plot([-1,c2_evals[-1]*16.6], [1,1], c='Olive', linestyle='dashed',
                     alpha=0.5)
         ##fi
         #ax.plot(c3_evals*16.6, c3_cml_norm, '--b', label='Class 3')

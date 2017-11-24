@@ -637,6 +637,12 @@ def PrepareData(region,
         fp_evals = fp_evals[fp_ext_argsort][::-1]
         rp_evals = rp_evals[rp_ext_argsort][::-1]
 
+        # Take the absolute value to account for noise
+        p_evals = np.absolute(p_evals)
+        d_evals = np.absolute(d_evals)
+        fp_evals = np.absolute(fp_evals)
+        rp_evals = np.absolute(rp_evals)
+
         # Normalized cumulative.
         p_norm_mass = np.sum(p_mvals)
         d_norm_mass = np.sum(d_mvals)
@@ -683,6 +689,12 @@ def PrepareData(region,
         f_evals = f_evals[f_ext_argsort][::-1]
         c2_evals = c2_evals[c2_ext_argsort][::-1]
         c3_evals = c3_evals[c3_ext_argsort][::-1]
+
+        # Take the absolute value to account for noise
+        c01_evals = np.absolute(c01_evals)
+        f_evals = np.absolute(f_evals)
+        c2_evals = np.absolute(c2_evals)
+        c3_evals = np.absolute(c3_evals)
 
         # Normalized cumulative.
         c01_norm_mass = np.sum(c01_mvals)
